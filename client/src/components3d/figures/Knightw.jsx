@@ -6,7 +6,7 @@ Command: npx gltfjsx@6.2.5 public/models/knightb.glb
 import React, { useRef } from "react";
 import { useGLTF } from "@react-three/drei";
 
-export function Knight({ position, color, selected }) {
+export function KnightW({ position, color, selected }) {
   const { nodes, materials } = useGLTF("models/kingb.glb");
   return (
     <group
@@ -16,8 +16,8 @@ export function Knight({ position, color, selected }) {
       <mesh
         castShadow
         receiveShadows
-        geometry={nodes.Black_knight.geometry}
-        material={materials["Material.001"]}
+        geometry={nodes.White_knight.geometry}
+        material={materials["Material.004"]}
       >
         {selected && <meshStandardMaterial color="green" />}
       </mesh>

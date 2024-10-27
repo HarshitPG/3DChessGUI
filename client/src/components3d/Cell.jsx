@@ -8,6 +8,8 @@ const Cell = ({
   onCellSelect,
   availableMoves,
   onFigureMove,
+  rowIndex,
+  cellIndex,
 }) => {
   return (
     <>
@@ -19,11 +21,13 @@ const Cell = ({
             position={position}
             cell={cell}
             onFigureMove={onFigureMove}
+            rowIndex={rowIndex}
+            cellIndex={cellIndex}
           />
         ) : null
       )}
       <mesh
-        onClick={() => onCellSelect(cell)}
+        onClick={() => onCellSelect(cell, rowIndex, cellIndex)}
         scale={[1, 1, 0.1]}
         position={[position.x, 0, position.y]}
         rotation={[Math.PI / -2, 0, 0]}

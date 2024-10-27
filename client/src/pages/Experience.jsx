@@ -1,20 +1,32 @@
 import { Canvas } from "@react-three/fiber";
-import { Environment, OrbitControls } from "@react-three/drei";
+import { Environment, OrbitControls, Stats } from "@react-three/drei";
 import { useCallback, useContext, useEffect, Suspense, useState } from "react";
 import Board from "../components3d/Board.jsx";
 import { GameContext } from "../context/GameContext.jsx";
 import Modal3dChess from "../components/Model3d.jsx";
+import { Background } from "../utils/Background.jsx";
 
 const Scene = () => {
   const { state, dispatch } = useContext(GameContext);
   const { side, showModal, aiMovedRef, playerMovedRef } =
     useContext(GameContext);
 
-  const { board, figures, selectedCell, availableMoves, whoseMove } = state;
+  const {
+    board,
+    figures,
+    selectedCell,
+    availableMoves,
+    whoseMove,
+    isMoving,
+    targetPosition,
+  } = state;
 
   const onCellSelect = useCallback(
-    (cell) => {
-      dispatch({ type: "SET_SELECT_CELL", payload: cell });
+    (cell, rowIndex, cellIndex) => {
+      dispatch({
+        type: "SET_SELECT_CELL",
+        payload: { cell, rowIndex, cellIndex },
+      });
     },
     [dispatch]
   );
@@ -66,6 +78,7 @@ const Scene = () => {
       <div className="root3d">
         <Suspense fallback={<div>Loading...</div>}>
           {showModal && <Modal3dChess />}
+
           <Canvas camera={{ fov: 45, position: [10, 5, 0] }}>
             <OrbitControls enablePan={false} minDistance={4} maxDistance={12} />
             <ambientLight />
@@ -75,6 +88,7 @@ const Scene = () => {
               background
               blur={0.5}
             />
+            <Background />
             <Board
               board={board}
               figures={figures}
@@ -84,7 +98,12 @@ const Scene = () => {
               onFigureMove={onFigureMove}
               rotation={rotation}
               position={position}
+              isMoving={isMoving}
+              targetPosition={targetPosition}
             />
+
+            {/* <axesHelper args={[5]} />
+            <Stats /> */}
           </Canvas>
         </Suspense>
       </div>

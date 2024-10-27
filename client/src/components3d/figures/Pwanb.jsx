@@ -9,18 +9,17 @@ import { useGLTF } from "@react-three/drei";
 export function Pawn({ position, color, selected }) {
   const { nodes, materials } = useGLTF("models/kingb.glb");
   return (
-    <group position={[position.x, 0.45, position.y]} scale={[0.3, 0.3, 0.3]}>
+    <group
+      position={[position.x / 64, 0.45 / 64, position.y / 64]}
+      scale={[0.3, 0.3, 0.3]}
+    >
       <mesh
         castShadow
         receiveShadow
         geometry={nodes.A001.geometry}
         material={materials["Material.001"]}
       >
-        <meshStandardMaterial
-          roughness={0.2}
-          metalness={1}
-          color={selected ? "green" : color === "w" ? "white" : "#9497a0"}
-        />
+        {selected && <meshStandardMaterial color="green" />}
       </mesh>
     </group>
   );

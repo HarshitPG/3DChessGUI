@@ -6,10 +6,13 @@ Command: npx gltfjsx@6.2.5 public/models/bitshopb.glb
 import React, { useRef } from "react";
 import { useGLTF } from "@react-three/drei";
 
-export function Bitshop({ position, color, selected }) {
+export function Bitshop({ position, selected }) {
   const { nodes, materials } = useGLTF("models/kingb.glb");
   return (
-    <group position={[position.x, 0.6, position.y]} scale={[0.3, 0.3, 0.3]}>
+    <group
+      position={[position.x / 64, 0.1, position.y / 64]}
+      scale={[0.3, 0.3, 0.3]}
+    >
       <mesh
         castShadow
         receiveShadow
@@ -17,11 +20,7 @@ export function Bitshop({ position, color, selected }) {
         material={materials["Material.001"]}
       >
         {" "}
-        <meshStandardMaterial
-          roughness={0.2}
-          metalness={1}
-          color={selected ? "green" : color === "w" ? "white" : "#9497a0"}
-        />
+        {selected && <meshStandardMaterial color="green" />}
       </mesh>
     </group>
   );

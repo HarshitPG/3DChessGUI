@@ -4,39 +4,57 @@ import { Bitshop } from "./Bitshopb";
 import { Rook } from "./Rookb";
 import { Queen } from "./Queenb";
 import { King } from "./Kingb";
+import { useSpring, animated } from "@react-spring/three";
+import { PawnW } from "./Pwanw";
+import { KnightW } from "./Knightw";
+import { BitshopW } from "./Bitshopw";
+import { RookW } from "./Rookw";
+import { QueenW } from "./Queenw";
+import { KingW } from "./Kingw";
 
-const Figure = ({ figure, position, selected }) => {
-  if (figure && figure.type === "p") {
-    return (
-      <Pawn color={figure.color} position={position} selected={selected} />
-    );
+const Figure = ({ figure, position, selected, isMoving, targetPosition }) => {
+  const { pos } = useSpring({
+    pos: isMoving
+      ? [targetPosition.x, 0.45, targetPosition.y]
+      : [position.x, 0.45, position.y],
+    config: { mass: 1, tension: 180, friction: 12 },
+  });
+  console.log("targetPosition", targetPosition.x, isMoving);
+
+  const { hover } = useSpring({
+    hover: selected ? 0.05 : 0,
+    config: { mass: 1, tension: 180, friction: 12 },
+  });
+
+  const renderFigure = (Component) => (
+    <animated.group position={pos}>
+      <animated.group position-y={hover}>
+        <Component
+          color={figure.color}
+          selected={selected}
+          position={position}
+        />
+      </animated.group>
+    </animated.group>
+  );
+
+  if (!figure) return null;
+  switch (figure.type) {
+    case "p":
+      return renderFigure(figure.color === "w" ? PawnW : Pawn);
+    case "n":
+      return renderFigure(figure.color === "w" ? KnightW : Knight);
+    case "b":
+      return renderFigure(figure.color === "w" ? BitshopW : Bitshop);
+    case "r":
+      return renderFigure(figure.color === "w" ? RookW : Rook);
+    case "q":
+      return renderFigure(figure.color === "w" ? QueenW : Queen);
+    case "k":
+      return renderFigure(figure.color === "w" ? KingW : King);
+    default:
+      return null;
   }
-  if (figure && figure.type === "n") {
-    return (
-      <Knight color={figure.color} position={position} selected={selected} />
-    );
-  }
-  if (figure && figure.type === "b") {
-    return (
-      <Bitshop color={figure.color} position={position} selected={selected} />
-    );
-  }
-  if (figure && figure.type === "r") {
-    return (
-      <Rook color={figure.color} position={position} selected={selected} />
-    );
-  }
-  if (figure && figure.type === "q") {
-    return (
-      <Queen color={figure.color} position={position} selected={selected} />
-    );
-  }
-  if (figure && figure.type === "k") {
-    return (
-      <King color={figure.color} position={position} selected={selected} />
-    );
-  }
-  return null;
 };
 
 export default Figure;

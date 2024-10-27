@@ -13,12 +13,16 @@
     "@radix-ui/themes": "^3.1.4",
     "@react-three/drei": "^9.114.6",
     "@react-three/fiber": "^8.17.10",
+    "@use-gesture/react": "^10.3.1",
     "axios": "^1.7.7",
     "chess.js": "^1.0.0-beta.8",
+    "gltfjsx": "^6.5.2",
+    "lamina": "^1.1.23",
     "prop-types": "^15.8.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-spring": "^9.7.4",
+    "read-pkg-up": "^11.0.0",
     "three": "^0.169.0"
   },
   "devDependencies": {
