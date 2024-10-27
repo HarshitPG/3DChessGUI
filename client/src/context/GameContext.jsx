@@ -29,8 +29,8 @@ const initialState = {
   isMate: chess.isGameOver(),
   isAiMove: false,
   isAiMoveLoading: false,
-  movingPiece: false,
-  targetCell: null,
+  movingPiece: null,
+  targetPosition: null,
   selectedRowIndex: null,
   selectedCellIndex: null,
 };
@@ -57,35 +57,62 @@ const gameReducer = (state, action) => {
           const piece = chess.get(newState.selectedCell);
 
           if (piece) {
-            newState.movingPiece = true;
+            newState.movingPiece = newState.selectedCell;
             newState.targetPosition = {
               x: target.charCodeAt(0) - "a".charCodeAt(0),
               y: 8 - parseInt(target[1]),
             };
+            newState.selectedCell = null;
+            newState.availableMoves = [];
             console.log("newtarget", newState.targetPosition);
-            const isPromotion =
-              piece &&
-              piece.type === "p" &&
-              (target[1] === "8" || target[1] === "1");
-            const moveConfig = chess.move({
-              from: newState.selectedCell,
-              to: target,
-              ...(isPromotion ? { promotion: "q" } : {}), // Conditionally add promotion
-            });
+            // const isPromotion =
+            //   piece &&
+            //   piece.type === "p" &&
+            //   (target[1] === "8" || target[1] === "1");
 
-            if (moveConfig) {
-              console.log("move", moveConfig);
-              newState.selectedCell = null;
-              newState.availableMoves = [];
-              newState.history = chess.history({ verbose: true });
-              newState.whoseMove = "b";
-              newState.isCheck = chess.isCheck();
-              newState.isMate = chess.isGameOver();
-              newState.isDraw = chess.isDraw();
-              newState.isAiMoveLoading = true;
+            setTimeout(() => {
+              // const moveConfig = chess.move({
+              //   from: newState.selectedCell,
+              //   to: target,
+              //   ...(isPromotion ? { promotion: "q" } : {}), // Conditionally add promotion
+              // });
+              // if (moveConfig) {
+              //   console.log("move", moveConfig);
+              //   newState.selectedCell = null;
+              //   newState.availableMoves = [];
+              //   newState.history = chess.history({ verbose: true });
+              //   newState.whoseMove = "b";
+              //   newState.isCheck = chess.isCheck();
+              //   newState.isMate = chess.isGameOver();
+              //   newState.isDraw = chess.isDraw();
+              //   newState.isAiMoveLoading = true;
               // aiMovedRef.current = false;
               // playerMovedRef.current = true;
-            }
+              //}
+            }, 500);
+            // const isPromotion =
+            //   piece &&
+            //   piece.type === "p" &&
+            //   (target[1] === "8" || target[1] === "1");
+            // const moveConfig = chess.move({
+            //   from: newState.selectedCell,
+            //   to: target,
+            //   ...(isPromotion ? { promotion: "q" } : {}), // Conditionally add promotion
+            // });
+
+            // if (moveConfig) {
+            //   console.log("move", moveConfig);
+            //   newState.selectedCell = null;
+            //   newState.availableMoves = [];
+            //   newState.history = chess.history({ verbose: true });
+            //   newState.whoseMove = "b";
+            //   newState.isCheck = chess.isCheck();
+            //   newState.isMate = chess.isGameOver();
+            //   newState.isDraw = chess.isDraw();
+            //   newState.isAiMoveLoading = true;
+            //   // aiMovedRef.current = false;
+            //   // playerMovedRef.current = true;
+            // }
             if (newState.isMate) {
               aiMovedRef.current = true;
               playerMovedRef.current = true;
