@@ -11,6 +11,7 @@ export function Queen({ position, color, selected }) {
   return (
     <group
       // position={[position.x / 64, 0.2, position.y / 64]}
+      position-y={0.2}
       scale={[0.3, 0.3, 0.3]}
     >
       <mesh

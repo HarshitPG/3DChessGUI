@@ -11,6 +11,7 @@ export function Knight({ position, color, selected }) {
   return (
     <group
       // position={[position.x / 64, 0.48 / 64, position.y / 64]}
+      position-y={0.5 / 64}
       scale={[0.3, 0.3, 0.3]}
     >
       <mesh
