@@ -1,5 +1,5 @@
 import { Canvas } from "@react-three/fiber";
-import { Environment, OrbitControls, Stats } from "@react-three/drei";
+import { Environment, OrbitControls } from "@react-three/drei";
 import { useCallback, useContext, useEffect, Suspense, useState } from "react";
 import Board from "../components3d/Board.jsx";
 import { GameContext } from "../context/GameContext.jsx";
@@ -17,7 +17,7 @@ const Scene = () => {
     selectedCell,
     availableMoves,
     whoseMove,
-    isMoving,
+    movingPiece,
     targetPosition,
   } = state;
 
@@ -35,7 +35,7 @@ const Scene = () => {
     (target) => {
       dispatch({
         type: "MOVE_FIGURE",
-        payload: { target, aiMovedRef, playerMovedRef },
+        payload: { target, aiMovedRef, playerMovedRef, movingPiece: true },
       });
     },
     [dispatch]
@@ -98,7 +98,7 @@ const Scene = () => {
               onFigureMove={onFigureMove}
               rotation={rotation}
               position={position}
-              isMoving={isMoving}
+              movingPiece={movingPiece}
               targetPosition={targetPosition}
             />
 

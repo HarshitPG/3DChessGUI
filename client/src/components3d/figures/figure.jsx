@@ -12,14 +12,26 @@ import { RookW } from "./Rookw";
 import { QueenW } from "./Queenw";
 import { KingW } from "./Kingw";
 
-const Figure = ({ figure, position, selected, isMoving, targetPosition }) => {
+const Figure = ({
+  figure,
+  position,
+  selected,
+  movingPiece,
+  targetPosition,
+}) => {
+  console.log("Figure position:", position);
+  console.log("Target position:", targetPosition);
+  console.log("Is moving:", movingPiece);
   const { pos } = useSpring({
-    pos: isMoving
-      ? [targetPosition.x, 0.45, targetPosition.y]
+    pos: movingPiece
+      ? [
+          targetPosition.x < 4 ? targetPosition.y : targetPosition.y,
+          0.45,
+          targetPosition.x < 4 ? -targetPosition.x : -targetPosition.x,
+        ]
       : [position.x, 0.45, position.y],
-    config: { mass: 1, tension: 180, friction: 12 },
+    config: { mass: 1, tension: 180, friction: 12, duration: 500 },
   });
-  console.log("targetPosition", targetPosition.x, isMoving);
 
   const { hover } = useSpring({
     hover: selected ? 0.05 : 0,
@@ -29,16 +41,13 @@ const Figure = ({ figure, position, selected, isMoving, targetPosition }) => {
   const renderFigure = (Component) => (
     <animated.group position={pos}>
       <animated.group position-y={hover}>
-        <Component
-          color={figure.color}
-          selected={selected}
-          position={position}
-        />
+        <Component color={figure.color} selected={selected} />
       </animated.group>
     </animated.group>
   );
 
   if (!figure) return null;
+
   switch (figure.type) {
     case "p":
       return renderFigure(figure.color === "w" ? PawnW : Pawn);

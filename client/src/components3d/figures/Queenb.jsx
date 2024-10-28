@@ -10,7 +10,7 @@ export function Queen({ position, color, selected }) {
   const { nodes, materials } = useGLTF("models/kingb.glb");
   return (
     <group
-      position={[position.x / 64, 0.2, position.y / 64]}
+      // position={[position.x / 64, 0.2, position.y / 64]}
       scale={[0.3, 0.3, 0.3]}
     >
       <mesh
