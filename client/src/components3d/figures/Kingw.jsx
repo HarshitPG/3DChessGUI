@@ -11,6 +11,7 @@ export function KingW({ position, selected }) {
   return (
     <group
       //position={[position.x / 64, 0.25, position.y / 64]}
+      position-y={0.25}
       scale={[0.3, 0.3, 0.3]}
     >
       <mesh

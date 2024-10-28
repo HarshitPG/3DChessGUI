@@ -11,6 +11,7 @@ export function BitshopW({ position, color, selected }) {
   return (
     <group
       // position={[position.x / 64, 0.1, position.y / 64]}
+      position-y={0.1}
       scale={[0.3, 0.3, 0.3]}
     >
       <mesh
