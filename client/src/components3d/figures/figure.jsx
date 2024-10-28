@@ -19,9 +19,9 @@ const Figure = ({
   movingPiece,
   targetPosition,
 }) => {
-  console.log("Figure position:", position);
-  console.log("Target position:", targetPosition);
-  console.log("Is moving:", movingPiece);
+  // console.log("Figure position:", position);
+  // console.log("Target position:", targetPosition);
+  // console.log("Is moving:", movingPiece);
 
   const { pos } = useSpring({
     pos: movingPiece
@@ -31,17 +31,17 @@ const Figure = ({
           targetPosition.x < 4 ? -targetPosition.x : -targetPosition.x,
         ]
       : [position.x, 0.45, position.y],
-    config: { mass: 1, tension: 180, friction: 12, duration: 300 },
+    config: { mass: 1, tension: 1000, friction: 2, duration: 150 },
   });
 
   const { hover } = useSpring({
     hover: selected ? 0.05 : 0,
-    config: { mass: 1, tension: 180, friction: 12 },
+    config: { mass: 1, tension: 180, friction: 120 },
   });
 
   const { jump } = useSpring({
     jump: movingPiece && figure.type === "n" ? 1 : 0,
-    config: { mass: 1, tension: 280, friction: 120, duration: 500 },
+    config: { mass: 1, tension: 100, friction: 2, duration: 150 },
   });
 
   const renderFigure = (Component) => (
