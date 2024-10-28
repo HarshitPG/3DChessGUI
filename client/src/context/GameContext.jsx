@@ -3,7 +3,6 @@ import { Chess } from "chess.js";
 import axios from "axios";
 import PropTypes from "prop-types";
 
-// Initial chess setup
 export let chess = new Chess();
 
 const initialState = {
@@ -28,17 +27,20 @@ const initialState = {
   isCheck: chess.isCheck(),
   isMate: chess.isGameOver(),
   isAiMove: false,
-  isAiMoveLoading: false,
   movingPiece: null,
   targetPosition: null,
   selectedRowIndex: null,
   selectedCellIndex: null,
+  isMoveInProgress: false,
+  isAiMoveInProgress: false,
+  toState: "",
+  toStateAi: "",
+  fromStateAi: "",
+  bestMoveAi: "",
 };
 
-// Create Context
 export const GameContext = createContext();
 
-// Reducer function for state management
 const gameReducer = (state, action) => {
   switch (action.type) {
     case "MOVE_FIGURE": {
@@ -46,16 +48,8 @@ const gameReducer = (state, action) => {
       const { aiMovedRef, playerMovedRef, target } = action.payload;
       if (newState.whoseMove === "w") {
         if (newState.selectedCell && newState.gameType === "AI") {
-          console.log("from", newState.selectedCell);
-          console.log("target", target);
-
-          // const move = chess.move({
-          //   from: newState.selectedCell,
-          //   to: target,
-          //   promotion: "q",
-          // });
+          newState.toState = target;
           const piece = chess.get(newState.selectedCell);
-
           if (piece) {
             newState.movingPiece = newState.selectedCell;
             newState.targetPosition = {
@@ -64,98 +58,20 @@ const gameReducer = (state, action) => {
             };
             newState.selectedCell = null;
             newState.availableMoves = [];
-            console.log("newtarget", newState.targetPosition);
-            // const isPromotion =
-            //   piece &&
-            //   piece.type === "p" &&
-            //   (target[1] === "8" || target[1] === "1");
-
-            setTimeout(() => {
-              // const moveConfig = chess.move({
-              //   from: newState.selectedCell,
-              //   to: target,
-              //   ...(isPromotion ? { promotion: "q" } : {}), // Conditionally add promotion
-              // });
-              // if (moveConfig) {
-              //   console.log("move", moveConfig);
-              //   newState.selectedCell = null;
-              //   newState.availableMoves = [];
-              //   newState.history = chess.history({ verbose: true });
-              //   newState.whoseMove = "b";
-              //   newState.isCheck = chess.isCheck();
-              //   newState.isMate = chess.isGameOver();
-              //   newState.isDraw = chess.isDraw();
-              //   newState.isAiMoveLoading = true;
-              // aiMovedRef.current = false;
-              // playerMovedRef.current = true;
-              //}
-            }, 500);
-            // const isPromotion =
-            //   piece &&
-            //   piece.type === "p" &&
-            //   (target[1] === "8" || target[1] === "1");
-            // const moveConfig = chess.move({
-            //   from: newState.selectedCell,
-            //   to: target,
-            //   ...(isPromotion ? { promotion: "q" } : {}), // Conditionally add promotion
-            // });
-
-            // if (moveConfig) {
-            //   console.log("move", moveConfig);
-            //   newState.selectedCell = null;
-            //   newState.availableMoves = [];
-            //   newState.history = chess.history({ verbose: true });
-            //   newState.whoseMove = "b";
-            //   newState.isCheck = chess.isCheck();
-            //   newState.isMate = chess.isGameOver();
-            //   newState.isDraw = chess.isDraw();
-            //   newState.isAiMoveLoading = true;
-            //   // aiMovedRef.current = false;
-            //   // playerMovedRef.current = true;
-            // }
+            newState.isMoveInProgress = true;
             if (newState.isMate) {
               aiMovedRef.current = true;
               playerMovedRef.current = true;
             }
           }
-          console.log("board", newState.movingPiece);
-          if (newState.whoseMove === "b" && newState.gameType === "AI") {
-            // axios
-            //   .post(
-            //     "http://127.0.0.1:5000/make_move",
-            //     new URLSearchParams({ fen: chess.fen() })
-            //   )
-            //   .then((response) => {
-            //     const data = response.data;
-            //     const ismoved = data.best_move;
-            //     chess.move(ismoved, { sloppy: true });
-            //     newState.selectedCell = null;
-            //     newState.availableMoves = [];
-            //     newState.history = chess.history({ verbose: true });
-            //     newState.whoseMove = "w";
-            //     newState.isCheck = chess.isCheck();
-            //     newState.isMate = chess.isGameOver();
-            //     newState.isDraw = chess.isDraw();
-            //     newState.ismovedCheck = ismoved;
-            //   })
-            //   .catch((error) => {
-            //     console.error("Error making AI move:", error);
-            //     // Handle the error gracefully, e.g., show a message to the user
-            //     newState.whoseMove = "w";
-            //   });
-          }
         }
         newState.prevFigures = newState.figures;
         const newFigures = chess.board();
-        console.log("new figure ", newFigures);
         if (
           JSON.stringify(newState.prevFigures) !== JSON.stringify(newFigures)
         ) {
           newState.figures = newFigures;
         }
-
-        console.log("newstate", newState.targetPosition);
-        // console.log("state", ...state);
       }
 
       return {
@@ -166,8 +82,8 @@ const gameReducer = (state, action) => {
       const newState = { ...state };
       const { cell, rowIndex, cellIndex } = action.payload;
       const colorOfSelectedFigure = chess.get(cell)?.color;
+      console.log("color", state.whoseMove);
 
-      // Allow selecting cell if it's the current player's turn
       if (colorOfSelectedFigure === state.whoseMove) {
         newState.selectedRowIndex = rowIndex;
         newState.selectedCellIndex = cellIndex;
@@ -190,20 +106,70 @@ const gameReducer = (state, action) => {
       return newState;
     }
 
+    case "AI_ANIMATION": {
+      const newState = { ...state };
+      const piece = chess.get(newState.fromStateAi);
+      if (newState.whoseMove === "b") {
+        if (piece) {
+          newState.movingPiece = newState.fromStateAi;
+          newState.targetPosition = {
+            x: newState.toStateAi.charCodeAt(0) - "a".charCodeAt(0),
+            y: 8 - parseInt(newState.toStateAi[1]),
+          };
+          newState.isAiMoveInProgress = true;
+        }
+        newState.prevFigures = newState.figures;
+        const newFigures = chess.board();
+        if (
+          JSON.stringify(newState.prevFigures) !== JSON.stringify(newFigures)
+        ) {
+          newState.figures = newFigures;
+        }
+      }
+      return {
+        ...newState,
+      };
+    }
+
+    case "COMPLETE_MOVE":
+      return {
+        ...state,
+        availableMoves: [],
+        isMoveInProgress: false,
+        history: chess.history({ verbose: true }),
+        whoseMove: "b",
+        isCheck: chess.isCheck(),
+        isMate: chess.isGameOver(),
+        isDraw: chess.isDraw(),
+        isAiMoveLoading: true,
+        isAiMoveInProgress: true,
+        figures: chess.board(),
+        // toState: "",
+        // movingPiece: "",
+        // targetPosition: "",
+      };
+
     case "UPDATE_AI_MOVE":
       return {
         ...state,
         figures: chess.board(),
+        availableMoves: [],
         history: chess.history({ verbose: true }),
         whoseMove: "w",
         isCheck: chess.isCheck(),
         isMate: chess.isGameOver(),
         isDraw: chess.isDraw(),
         isAiMoveLoading: false,
+        isAiMoveInProgress: false,
+        isMoveInProgress: true,
+        // toStateAi: "",
+        // fromStateAi: "",
+        // bestMoveAi: "",
       };
 
     case "SET_WHOSE_MOVE":
       chess = new Chess();
+      console.log("fig", chess.board());
       return {
         ...state,
         figures: chess.board(),
@@ -217,7 +183,6 @@ const gameReducer = (state, action) => {
   }
 };
 
-// Provider component to wrap the app
 export const GameProvider = ({ children }) => {
   const [state, dispatch] = useReducer(gameReducer, initialState);
 
@@ -230,21 +195,86 @@ export const GameProvider = ({ children }) => {
             new URLSearchParams({ fen: chess.fen() })
           );
           const { best_move } = response.data;
-          chess.move(best_move, { sloppy: true });
-          dispatch({ type: "UPDATE_AI_MOVE" });
+          console.log("best_move", best_move);
+          state.bestMoveAi = best_move;
+
+          let move;
+          if (best_move === "O-O" || best_move === "O-O-O") {
+            move =
+              best_move === "O-O"
+                ? { from: "e1", to: "g1" }
+                : { from: "e1", to: "c1" };
+          } else {
+            const match = best_move.match(/^(.{2})(.{2})([qrbn]?)$/i);
+            if (match) {
+              const [, from, to, promotion] = match;
+              move = { from, to };
+              if (promotion) move.promotion = promotion;
+            }
+          }
+
+          if (move) {
+            state.fromStateAi = move.from;
+            state.toStateAi = move.to;
+
+            dispatch({ type: "AI_ANIMATION" });
+          } else {
+            console.error("Invalid best_move format:", best_move);
+            fetchAiMove();
+          }
+          const timeoutId = setTimeout(() => {
+            state.AiMoveLoading = false;
+            // chess.move(best_move, { sloppy: true });
+            chess.move({
+              from: state.fromStateAi,
+              to: state.toStateAi,
+              ...(move.promotion ? { promotion: move.promotion } : {}),
+            });
+            dispatch({ type: "UPDATE_AI_MOVE" });
+            console.log("hi1", best_move);
+          }, 200);
+          return () => clearTimeout(timeoutId);
         } catch (error) {
           console.error("Error making AI move:", error);
-          dispatch({ type: "UPDATE_AI_MOVE" }); // Reset loading even on error
+          fetchAiMove();
         }
       };
 
       const timeoutId = setTimeout(() => {
         fetchAiMove();
-      }, 500);
+      }, 100);
 
       return () => clearTimeout(timeoutId);
     }
   }, [state.isAiMoveLoading]);
+
+  useEffect(() => {
+    console.log("Move progress check:", state.isMoveInProgress);
+    const piece = chess.get(state.selectedCell);
+    const isPromotion =
+      piece &&
+      piece.type === "p" &&
+      (state.toState[1] === "8" || state.toState[1] === "1");
+
+    if (state.isMoveInProgress) {
+      const timeoutId = setTimeout(() => {
+        if (state.whoseMove === "w" && !state.isAiMoveInProgress) {
+          const moveConfig = chess.move({
+            from: state.movingPiece,
+            to: state.toState,
+            ...(isPromotion ? { promotion: "q" } : {}),
+          });
+
+          if (moveConfig) {
+            console.log("triggered", state);
+            dispatch({ type: "COMPLETE_MOVE" });
+          }
+        }
+      }, 200);
+
+      return () => clearTimeout(timeoutId);
+    }
+  }, [state.isMoveInProgress, state.movingPiece, state.targetPosition]);
 
   return (
     <GameContext.Provider value={{ state, dispatch }}>
