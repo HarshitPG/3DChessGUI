@@ -41,38 +41,38 @@ const initialState = {
 
 export const GameContext = createContext();
 
+const toggleMove = (currentMove) => (currentMove === "w" ? "b" : "w");
+
 const gameReducer = (state, action) => {
   switch (action.type) {
     case "MOVE_FIGURE": {
       const newState = { ...state };
       const { aiMovedRef, playerMovedRef, target } = action.payload;
-      if (newState.whoseMove === "w") {
-        if (newState.selectedCell && newState.gameType === "AI") {
-          newState.toState = target;
-          const piece = chess.get(newState.selectedCell);
-          if (piece) {
-            newState.movingPiece = newState.selectedCell;
-            newState.targetPosition = {
-              x: target.charCodeAt(0) - "a".charCodeAt(0),
-              y: 8 - parseInt(target[1]),
-            };
-            newState.selectedCell = null;
-            newState.availableMoves = [];
-            newState.isMoveInProgress = true;
-            if (newState.isMate) {
-              aiMovedRef.current = true;
-              playerMovedRef.current = true;
-            }
+      // if (newState.whoseMove === "w") {
+      if (newState.selectedCell && newState.gameType === "AI") {
+        newState.toState = target;
+        const piece = chess.get(newState.selectedCell);
+        if (piece) {
+          newState.movingPiece = newState.selectedCell;
+          newState.targetPosition = {
+            x: target.charCodeAt(0) - "a".charCodeAt(0),
+            y: 8 - parseInt(target[1]),
+          };
+          newState.selectedCell = null;
+          newState.availableMoves = [];
+          newState.isMoveInProgress = true;
+          if (newState.isMate) {
+            aiMovedRef.current = true;
+            playerMovedRef.current = true;
           }
         }
-        newState.prevFigures = newState.figures;
-        const newFigures = chess.board();
-        if (
-          JSON.stringify(newState.prevFigures) !== JSON.stringify(newFigures)
-        ) {
-          newState.figures = newFigures;
-        }
       }
+      newState.prevFigures = newState.figures;
+      const newFigures = chess.board();
+      if (JSON.stringify(newState.prevFigures) !== JSON.stringify(newFigures)) {
+        newState.figures = newFigures;
+      }
+      // }
 
       return {
         ...newState,
@@ -109,23 +109,21 @@ const gameReducer = (state, action) => {
     case "AI_ANIMATION": {
       const newState = { ...state };
       const piece = chess.get(newState.fromStateAi);
-      if (newState.whoseMove === "b") {
-        if (piece) {
-          newState.movingPiece = newState.fromStateAi;
-          newState.targetPosition = {
-            x: newState.toStateAi.charCodeAt(0) - "a".charCodeAt(0),
-            y: 8 - parseInt(newState.toStateAi[1]),
-          };
-          newState.isAiMoveInProgress = true;
-        }
-        newState.prevFigures = newState.figures;
-        const newFigures = chess.board();
-        if (
-          JSON.stringify(newState.prevFigures) !== JSON.stringify(newFigures)
-        ) {
-          newState.figures = newFigures;
-        }
+      // if (newState.whoseMove === "b") {
+      if (piece) {
+        newState.movingPiece = newState.fromStateAi;
+        newState.targetPosition = {
+          x: newState.toStateAi.charCodeAt(0) - "a".charCodeAt(0),
+          y: 8 - parseInt(newState.toStateAi[1]),
+        };
+        newState.isAiMoveInProgress = true;
       }
+      newState.prevFigures = newState.figures;
+      const newFigures = chess.board();
+      if (JSON.stringify(newState.prevFigures) !== JSON.stringify(newFigures)) {
+        newState.figures = newFigures;
+      }
+      // }
       return {
         ...newState,
       };
@@ -137,7 +135,7 @@ const gameReducer = (state, action) => {
         availableMoves: [],
         isMoveInProgress: false,
         history: chess.history({ verbose: true }),
-        whoseMove: "b",
+        whoseMove: toggleMove(state.whoseMove),
         isCheck: chess.isCheck(),
         isMate: chess.isGameOver(),
         isDraw: chess.isDraw(),
@@ -155,7 +153,7 @@ const gameReducer = (state, action) => {
         figures: chess.board(),
         availableMoves: [],
         history: chess.history({ verbose: true }),
-        whoseMove: "w",
+        whoseMove: toggleMove(state.whoseMove),
         isCheck: chess.isCheck(),
         isMate: chess.isGameOver(),
         isDraw: chess.isDraw(),
@@ -174,8 +172,9 @@ const gameReducer = (state, action) => {
         ...state,
         figures: chess.board(),
         selectedCell: null,
+        isAiMoveLoading: true,
         history: [],
-        whoseMove: action.payload,
+        whoseMove: "w",
       };
 
     default:
@@ -258,7 +257,8 @@ export const GameProvider = ({ children }) => {
 
     if (state.isMoveInProgress) {
       const timeoutId = setTimeout(() => {
-        if (state.whoseMove === "w" && !state.isAiMoveInProgress) {
+        // if (state.whoseMove === "w" && !state.isAiMoveInProgress) {
+        if (!state.isAiMoveInProgress) {
           const moveConfig = chess.move({
             from: state.movingPiece,
             to: state.toState,
