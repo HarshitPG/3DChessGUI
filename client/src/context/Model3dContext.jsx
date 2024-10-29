@@ -1,9 +1,12 @@
 /* eslint-disable no-unused-vars */
-import { createContext, useState, useEffect, useRef } from "react";
+import { createContext, useState, useEffect, useRef, useContext } from "react";
 import PropTypes from "prop-types";
+import { GameContext } from "./GameContext";
 export const Modal3dChessContext = createContext(null);
 
 export const Modal3dChessContextProvider = ({ children }) => {
+  const { state, dispatch } = useContext(GameContext);
+  const { isAiMove } = useContext(GameContext);
   const [showModal, setShowModel] = useState(true);
   const [duration, setDuration] = useState("");
   const [side, setSide] = useState("");
@@ -23,7 +26,7 @@ export const Modal3dChessContextProvider = ({ children }) => {
     originalDurationRef.current = duration;
   }, [duration]);
   useEffect(() => {
-    if (side === "") {
+    if (side === "white") {
       aiMovedRef.current = true;
       playerMovedRef.current = false;
     } else if (side === "black") {
@@ -44,7 +47,7 @@ export const Modal3dChessContextProvider = ({ children }) => {
     setReset(true);
     setDuration(duration);
     console.log("resetdone", originalDurationRef.current);
-    if (side === "") {
+    if (side === "white") {
       aiMovedRef.current = true;
       playerMovedRef.current = false;
     }

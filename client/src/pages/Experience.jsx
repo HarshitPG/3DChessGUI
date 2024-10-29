@@ -3,22 +3,25 @@ import { Environment, OrbitControls } from "@react-three/drei";
 import { useCallback, useContext, useEffect, Suspense, useState } from "react";
 import Board from "../components3d/Board.jsx";
 import { GameContext } from "../context/GameContext.jsx";
-import Modal3dChess from "../components/Model3d.jsx";
+// import Modal3dChess from "../components/Model3d.jsx";
 import { Background } from "../utils/Background.jsx";
+import { Modal3dChessContext } from "../context/Model3dContext.jsx";
 
 const Scene = () => {
   const { state, dispatch } = useContext(GameContext);
-  const { side, showModal, aiMovedRef, playerMovedRef } =
-    useContext(GameContext);
+  const { side, showModal, duration, aiMovedRef, playerMovedRef } =
+    useContext(Modal3dChessContext);
 
+  console.log("duration", duration);
+  console.log("side", side);
   const {
     board,
     figures,
     selectedCell,
     availableMoves,
-    whoseMove,
     movingPiece,
     targetPosition,
+    // isAiMove,
   } = state;
 
   const onCellSelect = useCallback(
@@ -41,19 +44,38 @@ const Scene = () => {
     [dispatch]
   );
 
+  let moveColor = "w";
+  if (side === "black") {
+    moveColor = "b";
+  }
+  console.log("moveColor", moveColor);
+
   const onGameStart = useCallback(() => {
-    if (!showModal) {
+    if (side === "black") {
       dispatch({
         type: "SET_WHOSE_MOVE",
-        payload: whoseMove,
+        payload: moveColor,
       });
       console.log("Game Started");
     }
-  }, [dispatch, showModal]);
+  }, [dispatch, side]);
+
+  // const onAiWhite = useCallback(() => {
+  //   if (side === "black") {
+  //     dispatch({
+  //       type: "SET_AI_MOVE",
+  //     });
+  //     // console.log("Game Started");
+  //   }
+  // }, [dispatch, showModal]);
 
   useEffect(() => {
     onGameStart();
   }, [onGameStart, showModal]);
+
+  // useEffect(() => {
+  //   onAiWhite();
+  // }, [onAiWhite, showModal]);
 
   const [rotation, setRotation] = useState([0, 0, 0]);
   const [position, setPosition] = useState([0, 0, 0]);
@@ -77,8 +99,6 @@ const Scene = () => {
     <>
       <div className="root3d">
         <Suspense fallback={<div>Loading...</div>}>
-          {showModal && <Modal3dChess />}
-
           <Canvas camera={{ fov: 45, position: [10, 5, 0] }}>
             <OrbitControls enablePan={false} minDistance={4} maxDistance={12} />
             <ambientLight />
