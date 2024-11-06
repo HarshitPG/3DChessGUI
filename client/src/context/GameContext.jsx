@@ -2,6 +2,7 @@ import { createContext, useEffect, useReducer } from "react";
 import { Chess } from "chess.js";
 import axios from "axios";
 import PropTypes from "prop-types";
+// import { Modal3dChessContext } from "./Model3dContext";
 
 export let chess = new Chess();
 
@@ -43,12 +44,11 @@ export const GameContext = createContext();
 
 const toggleMove = (currentMove) => (currentMove === "w" ? "b" : "w");
 
-const gameReducer = (state, action) => {
+const GameReducer = (state, action) => {
   switch (action.type) {
     case "MOVE_FIGURE": {
       const newState = { ...state };
       const { aiMovedRef, playerMovedRef, target } = action.payload;
-      // if (newState.whoseMove === "w") {
       if (newState.selectedCell && newState.gameType === "AI") {
         newState.toState = target;
         const piece = chess.get(newState.selectedCell);
@@ -65,6 +65,8 @@ const gameReducer = (state, action) => {
             aiMovedRef.current = true;
             playerMovedRef.current = true;
           }
+          aiMovedRef.current = false;
+          playerMovedRef.current = true;
         }
       }
       newState.prevFigures = newState.figures;
@@ -72,12 +74,40 @@ const gameReducer = (state, action) => {
       if (JSON.stringify(newState.prevFigures) !== JSON.stringify(newFigures)) {
         newState.figures = newFigures;
       }
-      // }
 
       return {
         ...newState,
       };
     }
+
+    case "STOP_AI_CLOCK": {
+      const newState = { ...state };
+      const { aiMovedRef, playerMovedRef } = action.payload;
+      if (newState.isMate) {
+        aiMovedRef.current = true;
+        playerMovedRef.current = true;
+      }
+      aiMovedRef.current = true;
+      playerMovedRef.current = false;
+      return {
+        ...newState,
+      };
+    }
+
+    case "START_AI_CLOCK": {
+      const newState = { ...state };
+      const { aiMovedRef, playerMovedRef } = action.payload;
+      if (newState.isMate) {
+        aiMovedRef.current = true;
+        playerMovedRef.current = true;
+      }
+      aiMovedRef.current = false;
+      playerMovedRef.current = true;
+      return {
+        ...newState,
+      };
+    }
+
     case "SET_SELECT_CELL": {
       const newState = { ...state };
       const { cell, rowIndex, cellIndex } = action.payload;
@@ -109,7 +139,6 @@ const gameReducer = (state, action) => {
     case "AI_ANIMATION": {
       const newState = { ...state };
       const piece = chess.get(newState.fromStateAi);
-      // if (newState.whoseMove === "b") {
       if (piece) {
         newState.movingPiece = newState.fromStateAi;
         newState.targetPosition = {
@@ -123,7 +152,6 @@ const gameReducer = (state, action) => {
       if (JSON.stringify(newState.prevFigures) !== JSON.stringify(newFigures)) {
         newState.figures = newFigures;
       }
-      // }
       return {
         ...newState,
       };
@@ -142,9 +170,6 @@ const gameReducer = (state, action) => {
         isAiMoveLoading: true,
         isAiMoveInProgress: true,
         figures: chess.board(),
-        // toState: "",
-        // movingPiece: "",
-        // targetPosition: "",
       };
 
     case "UPDATE_AI_MOVE":
@@ -160,9 +185,6 @@ const gameReducer = (state, action) => {
         isAiMoveLoading: false,
         isAiMoveInProgress: false,
         isMoveInProgress: true,
-        // toStateAi: "",
-        // fromStateAi: "",
-        // bestMoveAi: "",
       };
 
     case "SET_WHOSE_MOVE":
@@ -183,7 +205,7 @@ const gameReducer = (state, action) => {
 };
 
 export const GameProvider = ({ children }) => {
-  const [state, dispatch] = useReducer(gameReducer, initialState);
+  const [state, dispatch] = useReducer(GameReducer, initialState);
 
   useEffect(() => {
     if (state.isAiMoveLoading) {
@@ -213,6 +235,8 @@ export const GameProvider = ({ children }) => {
           }
 
           if (move) {
+            // aiMovedRef.current = true;
+            // playerMovedRef.current = false;
             state.fromStateAi = move.from;
             state.toStateAi = move.to;
 

@@ -2,7 +2,7 @@
 import { createContext, useState, useEffect, useRef, useContext } from "react";
 import PropTypes from "prop-types";
 import { GameContext } from "./GameContext";
-export const Modal3dChessContext = createContext(null);
+export const Modal3dChessContext = createContext();
 
 export const Modal3dChessContextProvider = ({ children }) => {
   const { state, dispatch } = useContext(GameContext);
@@ -22,9 +22,12 @@ export const Modal3dChessContextProvider = ({ children }) => {
   const [gameResult, setGameResult] = useState("");
   const [subGameResult, setSubGameResult] = useState("");
 
+  console.log("dur", duration);
+
   useEffect(() => {
     originalDurationRef.current = duration;
   }, [duration]);
+
   useEffect(() => {
     if (side === "white") {
       aiMovedRef.current = true;

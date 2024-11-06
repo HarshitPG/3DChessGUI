@@ -6,6 +6,7 @@ import { GameContext } from "../context/GameContext.jsx";
 // import Modal3dChess from "../components/Model3d.jsx";
 import { Background } from "../utils/Background.jsx";
 import { Modal3dChessContext } from "../context/Model3dContext.jsx";
+import { Clock } from "../components3d/Clock.jsx";
 
 const Scene = () => {
   const { state, dispatch } = useContext(GameContext);
@@ -51,31 +52,19 @@ const Scene = () => {
   console.log("moveColor", moveColor);
 
   const onGameStart = useCallback(() => {
-    if (side === "black") {
+    if (side === "black" && showModal === false) {
       dispatch({
         type: "SET_WHOSE_MOVE",
         payload: moveColor,
       });
+      startAiClock();
       console.log("Game Started");
     }
   }, [dispatch, side]);
 
-  // const onAiWhite = useCallback(() => {
-  //   if (side === "black") {
-  //     dispatch({
-  //       type: "SET_AI_MOVE",
-  //     });
-  //     // console.log("Game Started");
-  //   }
-  // }, [dispatch, showModal]);
-
   useEffect(() => {
     onGameStart();
   }, [onGameStart, showModal]);
-
-  // useEffect(() => {
-  //   onAiWhite();
-  // }, [onAiWhite, showModal]);
 
   const [rotation, setRotation] = useState([0, 0, 0]);
   const [position, setPosition] = useState([0, 0, 0]);
@@ -89,11 +78,31 @@ const Scene = () => {
       setPosition([-3.5, 0, 3.5]);
     }
   }, [side]);
-  // useEffect(() => {
-  //   return () => {
-  //     console.log("Component unmounted");
-  //   };
-  // }, []);
+
+  const stopAiClock = useCallback(() => {
+    dispatch({
+      type: "STOP_AI_CLOCK",
+      payload: { aiMovedRef, playerMovedRef },
+    });
+  }, [dispatch]);
+
+  const startAiClock = useCallback(() => {
+    dispatch({
+      type: "START_AI_CLOCK",
+      payload: { aiMovedRef, playerMovedRef },
+    });
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (
+      state.isAiMoveLoading === false &&
+      state.isAiMoveInProgress === false &&
+      state.isMoveInProgress === true
+    ) {
+      stopAiClock();
+      console.log("stop  ai clock");
+    }
+  }, [state.isAiMoveLoading, state.isAiMoveInProgress, state.isMoveInProgress]);
 
   return (
     <>
@@ -102,13 +111,14 @@ const Scene = () => {
           <Canvas camera={{ fov: 45, position: [10, 5, 0] }}>
             <OrbitControls enablePan={false} minDistance={4} maxDistance={12} />
             <ambientLight />
-            <pointLight position={[0, 0, 10]} intensity={20} />
+            <pointLight position={[0, 0, 10]} intensity={2} />
             <Environment
               files="./hdr/086_hdrmaps_com_free_10K.exr"
               background
               blur={0.5}
             />
             <Background />
+            <Clock />
             <Board
               board={board}
               figures={figures}
