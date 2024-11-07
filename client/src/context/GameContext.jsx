@@ -212,7 +212,7 @@ export const GameProvider = ({ children }) => {
       const fetchAiMove = async () => {
         try {
           const response = await axios.post(
-            "http://127.0.0.1:5000/make_move",
+            "http://localhost:5000/make_move",
             new URLSearchParams({ fen: chess.fen() })
           );
           const { best_move } = response.data;
