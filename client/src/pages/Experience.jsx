@@ -7,6 +7,7 @@ import { GameContext } from "../context/GameContext.jsx";
 import { Background } from "../utils/Background.jsx";
 import { Modal3dChessContext } from "../context/Model3dContext.jsx";
 import { Clock } from "../components3d/Clock.jsx";
+import Modal3dChess from "../components/Model3d.jsx";
 
 const Scene = () => {
   const { state, dispatch } = useContext(GameContext);
@@ -60,7 +61,7 @@ const Scene = () => {
       startAiClock();
       console.log("Game Started");
     }
-  }, [dispatch, side]);
+  }, [dispatch, side, showModal]);
 
   useEffect(() => {
     onGameStart();
@@ -104,10 +105,28 @@ const Scene = () => {
     }
   }, [state.isAiMoveLoading, state.isAiMoveInProgress, state.isMoveInProgress]);
 
+  // useEffect(() => {
+  //   if (
+  //     state.isAiMoveLoading === false &&
+  //     state.isAiMoveInProgress === false &&
+  //     state.isMoveInProgress === true &&
+  //     side === "white"
+  //   ) {
+  //     stopAiClock();
+  //     console.log("stop  ai clock");
+  //   }
+  // }, [
+  //   state.isAiMoveLoading,
+  //   state.isAiMoveInProgress,
+  //   state.isMoveInProgress,
+  //   side,
+  // ]);
+
   return (
     <>
       <div className="root3d">
         <Suspense fallback={<div>Loading...</div>}>
+          {showModal && <Modal3dChess />}
           <Canvas camera={{ fov: 45, position: [10, 5, 0] }}>
             <OrbitControls enablePan={false} minDistance={4} maxDistance={12} />
             <ambientLight />
