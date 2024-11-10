@@ -9,7 +9,7 @@ const ModalGameOver = ({ gameResult, subGameResult, handleResetGame }) => {
         className="relative top-1/2 -translate-y-1/2 mx-auto p-4 shadow-md bg-gray-200 backdrop-filter backdrop-blur-sm bg-opacity-10 
 "
       >
-        <div align="center" role="document" className="my-10">
+        <div align="center" role="document" className="my-8">
           <p id="modalTitle" className="font-spaceGrotesk-bold text-5xl">
             Game Over
           </p>

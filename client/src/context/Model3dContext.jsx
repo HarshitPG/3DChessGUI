@@ -36,7 +36,7 @@ export const Modal3dChessContextProvider = ({ children }) => {
       aiMovedRef.current = false;
       playerMovedRef.current = true;
     }
-  }, [side]);
+  }, [side, showModal]);
 
   const closeModal = () => {
     setShowModel(false);

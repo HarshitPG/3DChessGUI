@@ -73,7 +73,7 @@ function Modal3dChess() {
                         target: { name: "duration", value: 1 },
                       });
                       setDuration(1);
-                      setChangesMade(true);
+                      // setChangesMade(true);
                     }}
                   >
                     1 min
@@ -91,7 +91,7 @@ function Modal3dChess() {
                         target: { name: "duration", value: 3 },
                       });
                       setDuration(3);
-                      setChangesMade(true);
+                      // setChangesMade(true);
                     }}
                   >
                     3 min
@@ -109,7 +109,7 @@ function Modal3dChess() {
                         target: { name: "duration", value: 10 },
                       });
                       setDuration(10);
-                      setChangesMade(true);
+                      // setChangesMade(true);
                     }}
                   >
                     10 min
@@ -127,7 +127,7 @@ function Modal3dChess() {
                         target: { name: "duration", value: 30 },
                       });
                       setDuration(30);
-                      setChangesMade(true);
+                      // setChangesMade(true);
                     }}
                   >
                     30 min
