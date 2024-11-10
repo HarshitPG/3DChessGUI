@@ -20,25 +20,25 @@
 
 @font-face {
   font-family: "SpaceGrotesk-Bold";
-  src: url("../public/fonts/spacegrotesk-bold.otf") format("truetype");
+  src: url("./assets/fonts/spacegrotesk-bold.otf") format("truetype");
 }
 
 @font-face {
   font-family: "SpaceGrotesk-SemiBold";
-  src: url("../public/fonts/spacegrotesk-semibold.otf") format("truetype");
+  src: url("./assets/fonts/spacegrotesk-semibold.otf") format("truetype");
 }
 
 @font-face {
   font-family: "SpaceGrotesk-Regular";
-  src: url("../public/fonts/spacegrotesk-regular.otf") format("truetype");
+  src: url("./assets/fonts/spacegrotesk-regular.otf") format("truetype");
 }
 
 @font-face {
   font-family: "SpaceGrotesk-Light";
-  src: url("../public/fonts/spacegrotesk-light.otf") format("truetype");
+  src: url("./assets/fonts/spacegrotesk-light.otf") format("truetype");
 }
 
 @font-face {
   font-family: "SpaceGrotesk-Medium";
-  src: url("../public/fonts/spacegrotesk-medium.otf") format("truetype");
+  src: url("./assets/fonts/spacegrotesk-medium.otf") format("truetype");
 }
