@@ -17,3 +17,28 @@
   height: 100vh;
   position: relative;
 }
+
+@font-face {
+  font-family: "SpaceGrotesk-Bold";
+  src: url("../public/fonts/SpaceGrotesk-Bold.otf") format("truetype");
+}
+
+@font-face {
+  font-family: "SpaceGrotesk-SemiBold";
+  src: url("../public/fonts/SpaceGrotesk-SemiBold.otf") format("truetype");
+}
+
+@font-face {
+  font-family: "SpaceGrotesk-Regular";
+  src: url("../public/fonts/SpaceGrotesk-Regular.otf") format("truetype");
+}
+
+@font-face {
+  font-family: "SpaceGrotesk-Light";
+  src: url("../public/fonts/SpaceGrotesk-Light.otf") format("truetype");
+}
+
+@font-face {
+  font-family: "SpaceGrotesk-Medium";
+  src: url("../public/fonts/SpaceGrotesk-Medium.otf") format("truetype");
+}

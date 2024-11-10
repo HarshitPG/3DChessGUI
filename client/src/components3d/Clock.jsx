@@ -156,7 +156,7 @@ export const Clock = () => {
           fontSize={1.25}
           lineHeight={1}
           rotation={[Math.PI / 6, Math.PI, 0]}
-          //   font={"../public/fonts/Satoshi-Bold.ttf"}
+          font={"../public/fonts/SpaceGrotesk-Bold.otf"}
         >
           {minutesPlayer + ":" + secondsPlayer}
         </Text>
@@ -168,7 +168,7 @@ export const Clock = () => {
           fontSize={1.25}
           lineHeight={1}
           rotation={[Math.PI / 6, Math.PI, 0]}
-          //   font={"../public/fonts/Satoshi-Bold.ttf"}
+          font={"../public/fonts/SpaceGrotesk-Bold.otf"}
         >
           {minutesAi + ":" + secondsAi}
         </Text>

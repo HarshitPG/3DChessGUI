@@ -8,14 +8,26 @@ import { Background } from "../utils/Background.jsx";
 import { Modal3dChessContext } from "../context/Model3dContext.jsx";
 import { Clock } from "../components3d/Clock.jsx";
 import Modal3dChess from "../components/Model3d.jsx";
+import ModalGameOver from "../components3d/ModalGameOver.jsx";
 
 const Scene = () => {
   const { state, dispatch } = useContext(GameContext);
-  const { side, showModal, duration, aiMovedRef, playerMovedRef } =
-    useContext(Modal3dChessContext);
-
-  console.log("duration", duration);
-  console.log("side", side);
+  const {
+    side,
+    showModal,
+    duration,
+    aiMovedRef,
+    playerMovedRef,
+    pauseClocks,
+    resetClocks,
+    gameOver,
+    gameResult,
+    setGameResult,
+    subGameResult,
+    setSubGameResult,
+    setGameOver,
+    setShowModel,
+  } = useContext(Modal3dChessContext);
   const {
     board,
     figures,
@@ -46,11 +58,49 @@ const Scene = () => {
     [dispatch]
   );
 
+  let status = "";
+
   let moveColor = "w";
   if (side === "black") {
     moveColor = "b";
   }
   console.log("moveColor", moveColor);
+
+  if (state.isMate && !gameOver) {
+    status = `Game over, ${moveColor} is in checkmate.`;
+    pauseClocks();
+    if (
+      (moveColor === "b" && side === "black") ||
+      (moveColor === "w" && side === "white")
+    ) {
+      console.log("You Lost :(");
+      setGameResult("You Lost :(");
+      setSubGameResult("Shuffle Won..");
+    } else {
+      setGameResult("You Won :)");
+      setSubGameResult("Shuffle Lost..");
+    }
+
+    setTimeout(() => {
+      setGameOver(true);
+    }, 3000);
+  } else if (state.isDraw && !gameOver) {
+    status = "Game over, drawn position";
+    setGameResult("Match Draw");
+    setSubGameResult("Shuffle Won..");
+    setTimeout(() => {
+      setGameOver(true);
+    }, 5000);
+    console.log(status);
+    // pauseClocks();
+  } else {
+    status = `${moveColor} to move`;
+    console.log(side);
+    if (state.isCheck) {
+      status += `, ${moveColor} is in check`;
+      // console.log(status);
+    }
+  }
 
   const onGameStart = useCallback(() => {
     if (side === "black" && showModal === false) {
@@ -94,48 +144,68 @@ const Scene = () => {
     });
   }, [dispatch]);
 
+  const newGame = useCallback(() => {
+    dispatch({
+      type: "NEW_GAME",
+    });
+  }, [dispatch]);
+
   useEffect(() => {
     if (
       state.isAiMoveLoading === false &&
       state.isAiMoveInProgress === false &&
-      state.isMoveInProgress === true
+      state.isMoveInProgress === true &&
+      state.isMate === false &&
+      state.isDraw === false &&
+      state.isStaleMate === false
     ) {
       stopAiClock();
-      console.log("stop  ai clock");
+      console.log("stop ai clock");
     }
   }, [state.isAiMoveLoading, state.isAiMoveInProgress, state.isMoveInProgress]);
 
-  // useEffect(() => {
-  //   if (
-  //     state.isAiMoveLoading === false &&
-  //     state.isAiMoveInProgress === false &&
-  //     state.isMoveInProgress === true &&
-  //     side === "white"
-  //   ) {
-  //     stopAiClock();
-  //     console.log("stop  ai clock");
-  //   }
-  // }, [
-  //   state.isAiMoveLoading,
-  //   state.isAiMoveInProgress,
-  //   state.isMoveInProgress,
-  //   side,
-  // ]);
+  useEffect(() => {
+    if (
+      state.isMate === true ||
+      state.isDraw === true ||
+      state.isStaleMate === true
+    ) {
+      pauseClocks();
+      console.log("stop clock");
+    }
+    console.log("stop ");
+  }, [state.figures]);
+
+  const handleResetGame = useCallback(() => {
+    newGame();
+    setGameOver(false);
+    setShowModel(true);
+    resetClocks();
+    pauseClocks();
+  }, [dispatch, showModal, resetClocks, gameOver]);
 
   return (
     <>
       <div className="root3d">
         <Suspense fallback={<div>Loading...</div>}>
           {showModal && <Modal3dChess />}
+          {gameOver && (
+            <ModalGameOver
+              gameOver={gameOver}
+              gameResult={gameResult}
+              subGameResult={subGameResult}
+              handleResetGame={handleResetGame}
+            />
+          )}
           <Canvas camera={{ fov: 45, position: [10, 5, 0] }}>
-            <OrbitControls enablePan={false} minDistance={4} maxDistance={12} />
+            <OrbitControls enablePan={false} minDistance={3} maxDistance={12} />
             <ambientLight />
-            <pointLight position={[0, 0, 10]} intensity={2} />
-            <Environment
+            <pointLight position={[0, 0, 10]} intensity={0} />
+            {/* <Environment
               files="./hdr/086_hdrmaps_com_free_10K.exr"
               background
               blur={0.5}
-            />
+            /> */}
             <Background />
             <Clock />
             <Board
