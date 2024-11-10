@@ -1,5 +1,5 @@
 /** @type {import('tailwindcss').Config} */
-export default {
+module.exports = {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}", "./index.css"],
   theme: {
     extend: {
@@ -10,7 +10,10 @@ export default {
         "spaceGrotesk-light": ["SpaceGrotesk-Light", "sans-serif"],
         "spaceGrotesk-medium": ["SpaceGrotesk-Medium", "sans-serif"],
       },
+      colors: {
+        customBlue: "#357ca1",
+      },
     },
   },
-  plugins: [],
+  plugins: [require("tailwind-scrollbar")({ nocompatible: true })],
 };
