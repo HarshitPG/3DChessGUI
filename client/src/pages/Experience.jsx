@@ -9,6 +9,7 @@ import { Modal3dChessContext } from "../context/Model3dContext.jsx";
 import { Clock } from "../components3d/Clock.jsx";
 import Modal3dChess from "../components/Model3d.jsx";
 import ModalGameOver from "../components3d/ModalGameOver.jsx";
+import PgnTable from "../components3d/PgnTable.jsx";
 
 const Scene = () => {
   const { state, dispatch } = useContext(GameContext);
@@ -199,6 +200,7 @@ const Scene = () => {
               handleResetGame={handleResetGame}
             />
           )}
+          {!showModal && <PgnTable />}
           <Canvas camera={{ fov: 45, position: [10, 5, 0] }}>
             <OrbitControls enablePan={false} minDistance={3} maxDistance={12} />
             <ambientLight />

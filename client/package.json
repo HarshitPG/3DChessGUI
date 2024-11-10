@@ -23,6 +23,7 @@
     "react-dom": "^18.3.1",
     "react-spring": "^9.7.4",
     "read-pkg-up": "^11.0.0",
+    "tailwind-scrollbar": "^3.1.0",
     "three": "^0.169.0"
   },
   "devDependencies": {

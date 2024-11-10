@@ -258,7 +258,7 @@ export const GameProvider = ({ children }) => {
       const fetchAiMove = async () => {
         try {
           const response = await axios.post(
-            "http://localhost:5000/make_move",
+            "https://flask-chess-app-latest.onrender.com/make_move",
             new URLSearchParams({ fen: chess.fen() })
           );
           const { best_move } = response.data;
