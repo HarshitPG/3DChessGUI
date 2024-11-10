@@ -16,6 +16,7 @@ const Scene = () => {
     side,
     showModal,
     duration,
+    setDuration,
     aiMovedRef,
     playerMovedRef,
     pauseClocks,
@@ -83,22 +84,20 @@ const Scene = () => {
 
     setTimeout(() => {
       setGameOver(true);
-    }, 3000);
+    }, 1000);
   } else if (state.isDraw && !gameOver) {
     status = "Game over, drawn position";
     setGameResult("Match Draw");
     setSubGameResult("Shuffle Won..");
     setTimeout(() => {
       setGameOver(true);
-    }, 5000);
+    }, 1000);
     console.log(status);
-    // pauseClocks();
   } else {
     status = `${moveColor} to move`;
     console.log(side);
     if (state.isCheck) {
       status += `, ${moveColor} is in check`;
-      // console.log(status);
     }
   }
 
@@ -177,12 +176,15 @@ const Scene = () => {
   }, [state.figures]);
 
   const handleResetGame = useCallback(() => {
-    newGame();
-    setGameOver(false);
-    setShowModel(true);
-    resetClocks();
-    pauseClocks();
-  }, [dispatch, showModal, resetClocks, gameOver]);
+    if (showModal === false) {
+      newGame();
+      setGameOver(false);
+      setShowModel(true);
+      // resetClocks();
+      // setDuration("");
+      pauseClocks();
+    }
+  }, [dispatch, showModal, gameOver]);
 
   return (
     <>
@@ -200,7 +202,7 @@ const Scene = () => {
           <Canvas camera={{ fov: 45, position: [10, 5, 0] }}>
             <OrbitControls enablePan={false} minDistance={3} maxDistance={12} />
             <ambientLight />
-            <pointLight position={[0, 0, 10]} intensity={0} />
+            <pointLight position={[0, 0, 0]} intensity={0} />
             {/* <Environment
               files="./hdr/086_hdrmaps_com_free_10K.exr"
               background

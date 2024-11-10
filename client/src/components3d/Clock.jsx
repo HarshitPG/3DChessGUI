@@ -13,13 +13,15 @@ export const Clock = () => {
     showModal,
     side,
     duration,
+    setDuration,
     playerMovedRef,
     aiMovedRef,
     reset,
     pause,
+    setGameResult,
+    setSubGameResult,
+    setGameOver,
   } = useContext(Modal3dChessContext);
-
-  console.log("dur(2)", duration);
 
   const [isPausedAi, setIsPausedAi] = useState(true);
   const [isPausedPlayer, setIsPausedPlayer] = useState(true);
@@ -34,11 +36,13 @@ export const Clock = () => {
   const isPausedPlayerRef = useRef(isPausedPlayer);
 
   useEffect(() => {
-    secondsLeftAiRef.current = duration * 60;
-    setSecondsLeftAi(secondsLeftAiRef.current);
-    secondsLeftPlayerRef.current = duration * 60;
-    setSecondsLeftPlayer(secondsLeftPlayerRef.current);
-  }, [showModal, reset, duration]);
+    if (showModal === false) {
+      secondsLeftAiRef.current = duration * 60;
+      setSecondsLeftAi(secondsLeftAiRef.current);
+      secondsLeftPlayerRef.current = duration * 60;
+      setSecondsLeftPlayer(secondsLeftPlayerRef.current);
+    }
+  }, [showModal, duration]);
 
   function clockPlayer() {
     secondsLeftPlayerRef.current--;
@@ -50,15 +54,25 @@ export const Clock = () => {
     setSecondsLeftAi(secondsLeftAiRef.current);
   }
 
-  //   useEffect(() => {
-  //     if (showModal === false) {
-  //       setIsPausedAi(false);
-  //       isPausedAiRef.current = false;
+  useEffect(() => {
+    if (secondsLeftPlayerRef.current === 0 && showModal === false) {
+      setGameResult("You Lost :(");
+      setSubGameResult("You ran out of time");
+      // setDuration("");
+      setTimeout(() => {
+        setGameOver(true);
+      }, 1000);
+    }
+    if (secondsLeftAiRef.current === 0 && showModal === false) {
+      setGameResult("You Won :)");
+      setSubGameResult("AI ran out of time");
+      // setDuration("");
+      setTimeout(() => {
+        setGameOver(true);
+      }, 1000);
+    }
+  }, [showModal, secondsLeftPlayerRef.current, secondsLeftAiRef.current]);
 
-  //       setIsPausedPlayer(false);
-  //       isPausedPlayerRef.current = false;
-  //     }
-  //   }, [showModal]);
   useLayoutEffect(() => {
     if (showModal === false && side === "black") {
       setIsPausedAi(false);
