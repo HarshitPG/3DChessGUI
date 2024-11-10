@@ -31,17 +31,17 @@ const Figure = ({
           targetPosition.x < 4 ? -targetPosition.x : -targetPosition.x,
         ]
       : [position.x, 0.45, position.y],
-    config: { mass: 1, tension: 1000, friction: 2, duration: 150 },
+    config: { mass: 10, tension: 10, friction: 10, duration: 130 },
   });
 
   const { hover } = useSpring({
-    hover: selected ? 0.05 : 0,
-    config: { mass: 1, tension: 180, friction: 120 },
+    hover: selected ? 0.2 : 0,
+    config: { mass: 2, tension: 2, friction: 8 },
   });
 
   const { jump } = useSpring({
     jump: movingPiece && figure.type === "n" ? 1 : 0,
-    config: { mass: 1, tension: 100, friction: 2, duration: 150 },
+    config: { mass: 5, tension: 15, friction: 5, duration: 130 },
   });
 
   const renderFigure = (Component) => (
