@@ -1,4 +1,5 @@
 {
+  "version": 2,
   "rewrites": [
     {
       "source": "/fonts/(.*)",
@@ -8,8 +9,5 @@
       "source": "/(.*)",
       "destination": "/"
     }
-  ],
-  "static": {
-    "public": "public"
-  }
+  ]
 }
