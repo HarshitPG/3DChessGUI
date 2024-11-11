@@ -31,7 +31,7 @@ const Figure = ({
           targetPosition.x < 4 ? -targetPosition.x : -targetPosition.x,
         ]
       : [position.x, 0.45, position.y],
-    config: { mass: 10, tension: 10, friction: 10, duration: 130 },
+    config: { mass: 10, tension: 10, friction: 10, duration: 45 },
   });
 
   const { hover } = useSpring({
@@ -41,7 +41,7 @@ const Figure = ({
 
   const { jump } = useSpring({
     jump: movingPiece && figure.type === "n" ? 1 : 0,
-    config: { mass: 5, tension: 15, friction: 5, duration: 130 },
+    config: { mass: 5, tension: 15, friction: 5, duration: 45 },
   });
 
   const renderFigure = (Component) => (

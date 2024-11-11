@@ -17,6 +17,7 @@ const Scene = () => {
   const {
     side,
     showModal,
+    setSide,
     duration,
     setDuration,
     aiMovedRef,
@@ -78,10 +79,10 @@ const Scene = () => {
     ) {
       console.log("You Lost :(");
       setGameResult("You Lost :(");
-      setSubGameResult("Shuffle Won..");
+      setSubGameResult("AI Won..");
     } else {
       setGameResult("You Won :)");
-      setSubGameResult("Shuffle Lost..");
+      setSubGameResult("AI Lost..");
     }
 
     setTimeout(() => {
@@ -90,7 +91,7 @@ const Scene = () => {
   } else if (state.isDraw && !gameOver) {
     status = "Game over, drawn position";
     setGameResult("Match Draw");
-    setSubGameResult("Shuffle Won..");
+    setSubGameResult("AI Won..");
     setTimeout(() => {
       setGameOver(true);
     }, 1000);
@@ -175,6 +176,21 @@ const Scene = () => {
     }
     console.log("stop ");
   }, [state.figures]);
+
+  const [playerColor, setPlayerColor] = useState(side === "black" ? "b" : "w");
+  useEffect(() => {
+    setPlayerColor(side === "black" ? "b" : "w");
+  }, [side]);
+
+  console.log("moveColor", playerColor);
+
+  const sideSet = useCallback(() => {
+    dispatch({ type: "SIDE", payload: { playerColor } });
+  }, [dispatch, playerColor]);
+
+  useEffect(() => {
+    if (!showModal) sideSet();
+  }, [showModal, sideSet]);
 
   const handleResetGame = useCallback(() => {
     if (showModal === false) {
