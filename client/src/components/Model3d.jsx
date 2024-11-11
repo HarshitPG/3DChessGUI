@@ -35,17 +35,11 @@ function Modal3dChess() {
         className="relative top-1/2 -translate-y-1/2 mx-auto p-4 shadow-md bg-gray-200 backdrop-filter backdrop-blur-sm bg-opacity-10 
 "
       >
-        {/* <Box
-          style={{
-            background: "var(--gray-a2)",
-            borderRadius: "var(--radius-3)",
-          }}
-          role="dialog"
-          aria-labelledby="modalTitle"
-          className="p-6"
-        > */}
         <div align="center" role="document" className="my-10">
-          <p id="modalTitle" className="font-spaceGrotesk-bold text-5xl">
+          <p
+            id="modalTitle"
+            className="font-spaceGrotesk-bold sm:text-5xl text-4xl"
+          >
             3D Chess Game Settings
           </p>
           <form
@@ -58,10 +52,10 @@ function Modal3dChess() {
               Play with [AI] Options:
             </div>
             <fieldset className="m-4 font-spaceGrotesk-regular">
-              <legend className="my-5 text-3xl font-spaceGrotesk-semibold ">
+              <legend className="my-5 sm:text-3xl text-2xl font-spaceGrotesk-semibold ">
                 Choose game duration
               </legend>
-              <Flex justify="center" gap="4">
+              <Flex justify="center" gap="3">
                 <label>
                   <Button
                     size="3"
@@ -136,10 +130,10 @@ function Modal3dChess() {
               </Flex>
             </fieldset>
             <fieldset className="m-4  font-spaceGrotesk-regular">
-              <legend className="py-2 text-3xl font-spaceGrotesk-semibold">
+              <legend className="py-2 sm:text-3xl text-2xl font-spaceGrotesk-semibold">
                 Choose your side
               </legend>
-              <Flex justify="center" gap="4" className="text-xl">
+              <Flex justify="center" gap="4" className="sm:text-xl text-lg">
                 <label>
                   <input
                     className="h-4 w-4 gap-1 cursor-pointer"
