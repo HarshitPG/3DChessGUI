@@ -10,6 +10,7 @@ import { Clock } from "../components3d/Clock.jsx";
 import Modal3dChess from "../components/Model3d.jsx";
 import ModalGameOver from "../components3d/ModalGameOver.jsx";
 import PgnTable from "../components3d/PgnTable.jsx";
+import Headers from "../components3d/Headers.jsx";
 
 const Scene = () => {
   const { state, dispatch } = useContext(GameContext);
@@ -118,7 +119,6 @@ const Scene = () => {
   }, [onGameStart, showModal]);
 
   const [rotation, setRotation] = useState([0, 0, 0]);
-  const [position, setPosition] = useState([0, 0, 0]);
 
   useEffect(() => {
     if (side === "black") {
@@ -187,6 +187,29 @@ const Scene = () => {
     }
   }, [dispatch, showModal, gameOver]);
 
+  const [cameraPosition, setCameraPosition] = useState([10, 5, 0]);
+  const [cameraFOV, setCameraFOV] = useState(45);
+  const [position, setPosition] = useState([0, 0, 0]);
+
+  useEffect(() => {
+    const handleWindowResize = () => {
+      if (window.innerWidth > 768) {
+        setCameraFOV(45);
+        setCameraPosition([10, 5, 0]);
+      } else if (window.innerWidth > 480) {
+        setCameraFOV(65);
+        setCameraPosition([10, 5, 0]);
+      } else {
+        setCameraFOV(95);
+        setCameraPosition([10, 5, 0]);
+      }
+    };
+
+    window.addEventListener("resize", handleWindowResize);
+    handleWindowResize();
+    return () => window.removeEventListener("resize", handleWindowResize);
+  }, []);
+
   return (
     <>
       <div className="root3d">
@@ -201,7 +224,8 @@ const Scene = () => {
             />
           )}
           {!showModal && <PgnTable />}
-          <Canvas camera={{ fov: 45, position: [10, 5, 0] }}>
+          {!showModal && <Headers handleResetGame={handleResetGame} />}
+          <Canvas camera={{ fov: cameraFOV, position: cameraPosition }}>
             <OrbitControls enablePan={false} minDistance={3} maxDistance={12} />
             <ambientLight />
             <pointLight position={[0, 0, 0]} intensity={0} />
