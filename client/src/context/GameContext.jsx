@@ -135,7 +135,10 @@ const GameReducer = (state, action) => {
       const colorOfSelectedFigure = chess.get(cell)?.color;
       console.log("color", state.side, colorOfSelectedFigure);
 
-      if (colorOfSelectedFigure === (state.side && state.whoseMove)) {
+      if (
+        colorOfSelectedFigure === state.side &&
+        colorOfSelectedFigure === state.whoseMove
+      ) {
         newState.selectedRowIndex = rowIndex;
         newState.selectedCellIndex = cellIndex;
         newState.selectedCell = cell;
@@ -310,7 +313,7 @@ export const GameProvider = ({ children }) => {
             });
             dispatch({ type: "UPDATE_AI_MOVE" });
             console.log("hi1", best_move);
-          }, 135);
+          }, 20);
           return () => clearTimeout(timeoutId);
         } catch (error) {
           console.error("Error making AI move:", error);
@@ -320,7 +323,7 @@ export const GameProvider = ({ children }) => {
 
       const timeoutId = setTimeout(() => {
         fetchAiMove();
-      }, 135);
+      }, 20);
 
       return () => clearTimeout(timeoutId);
     }
@@ -349,7 +352,7 @@ export const GameProvider = ({ children }) => {
             dispatch({ type: "COMPLETE_MOVE" });
           }
         }
-      }, 200);
+      }, 40);
 
       return () => clearTimeout(timeoutId);
     }
