@@ -40,6 +40,7 @@ const initialState = {
   toStateAi: "",
   fromStateAi: "",
   bestMoveAi: "",
+  side: "",
 };
 
 export const GameContext = createContext();
@@ -132,9 +133,9 @@ const GameReducer = (state, action) => {
       const newState = { ...state };
       const { cell, rowIndex, cellIndex } = action.payload;
       const colorOfSelectedFigure = chess.get(cell)?.color;
-      console.log("color", state.whoseMove);
+      console.log("color", state.side, colorOfSelectedFigure);
 
-      if (colorOfSelectedFigure === state.whoseMove) {
+      if (colorOfSelectedFigure === (state.side && state.whoseMove)) {
         newState.selectedRowIndex = rowIndex;
         newState.selectedCellIndex = cellIndex;
         newState.selectedCell = cell;
@@ -153,6 +154,14 @@ const GameReducer = (state, action) => {
         );
       }
 
+      return newState;
+    }
+
+    case "SIDE": {
+      const newState = { ...state };
+      const { playerColor } = action.payload;
+      newState.side = playerColor;
+      console.log("playerColor", playerColor, newState.side);
       return newState;
     }
 

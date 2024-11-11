@@ -1,10 +1,14 @@
-import { useContext, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { Modal3dChessContext } from "../context/Model3dContext";
 import { Box, Button, Flex, Heading } from "@radix-ui/themes/dist/cjs/index.js";
+import { GameContext } from "../context/GameContext";
 
 function Modal3dChess() {
-  const { closeModal, setDuration, setSide } = useContext(Modal3dChessContext);
+  const { state, dispatch } = useContext(GameContext);
+  const { closeModal, showModal, setDuration, setSide, side } =
+    useContext(Modal3dChessContext);
   const [fields, setFields] = useState({});
+  // const [done, setDone] = useState(false)
   const [changesMade, setChangesMade] = useState(false);
 
   const handleChange = (e) => {
@@ -25,7 +29,6 @@ function Modal3dChess() {
     e.preventDefault();
     if (validateForm()) {
       setChangesMade(true);
-      // closeModal();
     }
   };
 
