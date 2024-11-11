@@ -1,6 +1,13 @@
 import { Canvas } from "@react-three/fiber";
 import { Environment, OrbitControls } from "@react-three/drei";
-import { useCallback, useContext, useEffect, Suspense, useState } from "react";
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  Suspense,
+  useState,
+  useLayoutEffect,
+} from "react";
 import Board from "../components3d/Board.jsx";
 import { GameContext } from "../context/GameContext.jsx";
 // import Modal3dChess from "../components/Model3d.jsx";
@@ -39,6 +46,7 @@ const Scene = () => {
     availableMoves,
     movingPiece,
     targetPosition,
+    whoseMove,
     // isAiMove,
   } = state;
 
@@ -151,7 +159,7 @@ const Scene = () => {
     });
   }, [dispatch]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (
       state.isAiMoveLoading === false &&
       state.isAiMoveInProgress === false &&
@@ -163,7 +171,7 @@ const Scene = () => {
       stopAiClock();
       console.log("stop ai clock");
     }
-  }, [state.isAiMoveLoading, state.isAiMoveInProgress, state.isMoveInProgress]);
+  }, [state.whoseMove]);
 
   useEffect(() => {
     if (
