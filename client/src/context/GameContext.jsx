@@ -313,7 +313,7 @@ export const GameProvider = ({ children }) => {
             });
             dispatch({ type: "UPDATE_AI_MOVE" });
             console.log("hi1", best_move);
-          }, 45);
+          }, 90);
           return () => clearTimeout(timeoutId);
         } catch (error) {
           console.error("Error making AI move:", error);
@@ -323,7 +323,7 @@ export const GameProvider = ({ children }) => {
 
       const timeoutId = setTimeout(() => {
         fetchAiMove();
-      }, 45);
+      }, 90);
 
       return () => clearTimeout(timeoutId);
     }
@@ -352,7 +352,7 @@ export const GameProvider = ({ children }) => {
             dispatch({ type: "COMPLETE_MOVE" });
           }
         }
-      }, 45);
+      }, 90);
 
       return () => clearTimeout(timeoutId);
     }
